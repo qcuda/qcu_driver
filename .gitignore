@@ -1,0 +1,6 @@
+*.order
+*.mod.c
+*.o
+*.so
+*.ko
+.tags*
