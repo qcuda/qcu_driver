@@ -74,8 +74,6 @@ struct virtio_qc_mmap{
 	struct virtio_qc_page 	*group;
 };
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 ///	General Function
 ////////////////////////////////////////////////////////////////////////////////
@@ -338,6 +336,8 @@ void qcu_cudaUnregisterFatBinary(VirtioQCArg *arg)
 	pfunc();
 
 	qcu_misc_send_cmd(arg);
+	// should free memory registerFunctionMem here
+	// but causes segmentation fault
 }
 
 void qcu_cudaRegisterFunction(VirtioQCArg *arg)
@@ -349,11 +349,12 @@ void qcu_cudaRegisterFunction(VirtioQCArg *arg)
 	arg->pA = user_to_gpa(arg->pA, arg->pASize);
 	arg->pB = user_to_gpa(arg->pB, arg->pBSize);
 
-
 	qcu_misc_send_cmd(arg);
 
-	kfree_gpa(arg->pA, arg->pASize);
-	kfree_gpa(arg->pB, arg->pBSize);
+	// removed so fatbin available after reset devices
+	// freed in library UnregisterFatBinary function
+	// kfree_gpa(arg->pA, arg->pASize);
+	// kfree_gpa(arg->pB, arg->pBSize);
 }
 
 void qcu_cudaLaunch(VirtioQCArg *arg)
